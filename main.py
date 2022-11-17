@@ -52,14 +52,15 @@ def view():
 
     if request.method == 'POST':
         insert_address = request.get_json()
-        mycol.insert(insert_address)
+        mycol.insert_one(insert_address)
         return jsonify(json.dumps('Data Inserted'))
 
-@app.route("/update/<id>", methods=['PUT','DELETE'])
-def update(id):
-
+@app.route("/update", methods=['PUT','DELETE'])
+def update():
+    id=request.args.get('id')
     try:
         if request.method == 'PUT':
+            
             id=ObjectId(id)
             print('ID',id)
             update_response = mycol.update_one({"_id": id}, {"$set": request.get_json()})
@@ -74,6 +75,7 @@ def update(id):
     if request.method == 'DELETE':
         try:
             print('inside delete')
+            print('___________',id)
             delete_response=mycol.delete_one({"_id": ObjectId(id)})
             print(delete_response['n'])
             print(delete_response)
